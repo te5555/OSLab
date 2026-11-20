@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6fa">
+  <title>从一个进程到两个 · 操作系统</title>
+  <link rel="stylesheet" href="lab.css">
+  <script src="lab.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#overview">跳至讲义正文</a>
+<aside class="sidebar" aria-label="课程导航">
+  <div class="rail-inner">
+    <div class="site-header">
+      <a class="brand" href="#page-title">操作系统</a>
+      <button type="button" id="menu-toggle" aria-expanded="false" aria-controls="course-nav">目录</button>
+    </div>
+    <nav id="course-nav" aria-label="本讲目录">
+      <p class="nav-term">2026 春季</p>
+      <p class="nav-lecture">第 9 讲 · 进程</p>
+      <ul class="section-links">
+        <li><a href="#overview" aria-current="location" data-keywords="虚拟化 fork 返回值 子进程 父进程 课件 第18页 PID">实验说明</a></li>
+        <li><a href="#experiment" data-keywords="main.c Linux TinyCC C语言 编辑 源码 编译 运行 输出 终端 fork">代码实验</a></li>
+        <li><a href="#practice" data-keywords="x++ 100 内存 变量 副本 父子进程 修改 思考">思考练习</a></li>
+      </ul>
+    </nav>
+  </div>
+</aside>
+<div class="page">
+  <header class="utility">
+    <div class="utility-inner">
+      <div class="search-box" role="search">
+        <span class="magnifier" aria-hidden="true"></span>
+        <input id="doc-search" type="search" placeholder="搜索本讲内容" aria-label="搜索本讲内容" aria-controls="search-results" autocomplete="off">
+        <div id="search-results" hidden></div>
+      </div>
+      <a class="home-link" href="https://niuxintao.github.io/courses/2026Spring-OS/main/" target="_blank" rel="noopener">课程主页</a>
+    </div>
+  </header>
+  <main class="document">
+    <section id="overview" tabindex="-1" aria-labelledby="page-title">
+      <div class="breadcrumb"><a href="https://niuxintao.github.io/courses/2026Spring-OS/main/" target="_blank" rel="noopener">2026 春季</a><span>/</span>虚拟化<span>/</span>第 9 讲 · 进程</div>
+      <h1 id="page-title">从一个进程到两个</h1>
+      <p class="lead">程序只调用了一次 <code>fork()</code>，为什么会看到两条输出？</p>
+      <p class="intro-text">对照课件，运行下面的 C 程序，观察父子进程各自拿到的返回值和变量 <code>x</code> 的初值。</p>
+      <a id="slides" class="slide-link" target="_blank" rel="noopener" href="https://niuxintao.github.io/assets/pdf/2026Spring-OS/9.%5B%E8%99%9A%E6%8B%9F%E5%8C%96%5D%E8%BF%9B%E7%A8%8B.pdf#page=18">查看课件 · 第 18 页</a>
+      <figure class="flow" aria-label="fork 成功时，父进程得到子进程的 PID，子进程得到零。">
+        <div class="flow-root"><code>fork()</code></div>
+        <div class="paths">
+          <div class="path"><strong>父进程</strong><code>ret &gt; 0</code><span>返回子进程的 PID</span></div>
+          <div class="path"><strong>子进程</strong><code>ret = 0</code><span>从同一行继续执行</span></div>
+        </div>
+      </figure>
+    </section>
+    <section id="experiment" tabindex="-1" aria-labelledby="lab-title">
+      <div class="section-head">
+        <h2 id="lab-title">代码实验</h2>
+        <div class="actions">
+          <span id="shortcut">Ctrl / ⌘ + Enter</span>
+          <button type="button" id="stop" hidden>停止</button>
+          <button type="button" id="run" disabled>编译并运行</button>
+        </div>
+      </div>
+      <div class="workbench">
+        <div class="editor-pane">
+          <div class="bar file-bar">
+            <strong>main.c</strong>
+            <button type="button" class="text-btn" id="reset">还原源码</button>
+          </div>
+          <div class="editor" id="editor">
+            <div class="gutter" aria-hidden="true" id="gutter"></div>
+            <div class="edit-area">
+              <pre aria-hidden="true" id="highlight"></pre>
+              <textarea id="source" aria-label="可编辑的 C 源码" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" disabled></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="bar"><strong>运行终端</strong><span id="status" role="status">待运行</span></div>
+          <pre id="output" tabindex="0" aria-label="编译和运行输出">点击「编译并运行」查看这次执行的输出。</pre>
+          <div class="terminal-foot"><span id="runtime">浏览器 Linux · TinyCC</span><span id="exit"></span></div>
+        </div>
+      </div>
+    </section>
+    <section id="practice" tabindex="-1" aria-labelledby="practice-title">
+      <h2 id="practice-title">思考练习</h2>
+      <ol>
+        <li>把 <code>x</code> 的初值改为 <code>100</code>，再运行一次。父子进程分别打印什么？</li>
+        <li>在子进程的 <code>printf</code> 前加上 <code>x++;</code>，观察父进程的值会不会跟着变。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+<dialog id="slide-dialog" aria-labelledby="slide-title">
+  <div class="bar slide-bar"><strong id="slide-title">第 9 讲 · 进程</strong><button id="close-slide" type="button" class="text-btn">关闭</button></div>
+  <img src="slide-18.png" width="1250" height="704" alt="课件第 18 页。x 初值为 42，fork 后，父子进程分别打印返回值和 x 的值。">
+  <div class="slide-bottom"><span>课件原页 · 第 18 页</span><a id="pdf-link" target="_blank" rel="noopener">打开完整 PDF</a></div>
+</dialog>
+</body>
+</html>

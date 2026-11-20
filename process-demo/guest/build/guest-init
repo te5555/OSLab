@@ -1,0 +1,24 @@
+#!/bin/sh
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin LC_ALL=C
+mount -t proc proc /proc
+mount -t devtmpfs devtmpfs /dev
+exec >/dev/ttyS0 2>&1
+die() { echo 'OSLAB ERROR'; exec /bin/sleep 86400; }
+mount -t 9p -o trans=virtio,cache=none host9p /mnt || die
+mkdir -p /tmp
+chmod 1777 /tmp
+: > /mnt/stdout
+: > /mnt/stderr
+tcc /supervise.c -o /tmp/supervise || die
+echo 'OSLAB COMPILE'
+cd /mnt || die
+(ulimit -f 128; exec tcc -Wall main.c -o /tmp/student) > /mnt/stdout 2> /mnt/stderr
+compiled=$?
+if [ "$compiled" -ne 0 ]; then
+    echo "OSLAB DONE compile $compiled"
+else
+    echo 'OSLAB RUN'
+    /tmp/supervise < /mnt/stdin >> /mnt/stdout 2>> /mnt/stderr
+    echo "OSLAB DONE run $?"
+fi
+exec /bin/sleep 86400
